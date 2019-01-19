@@ -1,0 +1,248 @@
+body {
+    margin: 0;
+    background: #f0f5f9 !important;
+    overflow-x: hidden !important;
+    font-family: Proxima Nova Condensed Light , Proxima Nova Condensed Light, Proxima Nova Condensed Light;margin: 0;}
+/*form {border: 3px solid #f1f1f1;}*/
+
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 11px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 20px;
+}
+input:focus {
+    outline-width: 0;
+}
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px 11px;
+    margin-top: 13px ;
+    margin-bottom: 110px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    font-size: 17px;
+    border-radius: 20px;
+}
+.button_wrap{
+    margin: auto;
+    width: 98%;
+    background-color: #4CAF50;
+    height: 48px;
+    font-size: 13px;
+    border-radius: 20px;
+
+}
+.button{
+    color: white;
+    padding-top: 30px;
+
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+.cancelbtn {
+    width: auto;
+    padding: 10px 18px;
+    background-color: #f44336;
+}
+.mobile_section{
+    padding-top:30px;
+    max-width: 415px;
+    margin: 0 auto;
+    width: 100%;
+    height: 750px;
+}
+.imgcontainer {
+    text-align: center;
+    width: 100%;
+    height: 99%;
+    margin: auto;
+    background: url('../images/phone.png');
+    background-size: 100% 100%;
+    overflow: hidden;
+    /*padding: 75px 19px 95px;*/
+    border-top: 0;
+
+}
+.container{
+    width: 83%;
+    margin: auto;
+}
+.police{
+    width:90%;
+    height:337px;
+    margin-top: 60px;
+}
+@media (max-width: 700px){
+    .mobile_section{
+        width: 300px;
+        height: 640px;
+    }
+    input[type=text], input[type=password] {
+
+        margin: 7px 0;
+
+    }
+    .police{
+        height:252px;
+        margin-top: 53px;
+    }
+    button {
+
+        margin-bottom: 90px;
+
+    }
+}
+.site-footer{
+    padding-top: 30px;
+
+}
+.textwidget{
+    background: #00acf0;
+    text-align: center;
+    padding: 15px 0;
+    color: white;
+}
+
+
+.register {
+    padding: 16px;
+    margin-top: -7%;
+}
+
+span.psw {
+    float: right;
+    padding-top: 16px;
+}
+
+
+.form1{
+    width: 30%;
+    margin-left: 35%;
+
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+
+}
+.nav_bar{
+    /*margin-left: 70%;*/
+    padding: 20px 0;
+    background: #00acf0;
+}
+@media (max-width: 1000px){
+    .nav_bar {
+        padding: 20px 25px;
+    }}
+.wrapper {
+    max-width: 1170px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+}
+@media (max-width: 1000px){
+    .wrapper{
+        content: "";
+        display: table;
+        clear: both;
+    }}
+.nav{
+
+    float: right;
+    margin-top: 10px;
+}
+.logo{
+    width:30%;
+    float: left;
+    margin: 0 auto 0 0;
+}
+@media (max-width: 1000px){
+    .logo {
+        margin: 0 auto 0 0;
+        width: 100%;
+        text-align: center;
+        clear: both}
+    .nav{
+        clear: both;
+        width: 200%;
+        text-align: center;
+        /*max-width: 281px;*/
+        margin: 0 auto;
+    }
+}
+li {
+    float: right;
+}
+
+li a, .dropbtn {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 5px 16px;
+    text-decoration: none;
+    font-size: 25px;
+    border-radius: 20px;
+}
+@media (max-width: 1000px){
+    li a, .dropbtn{
+        font-size: 15px;
+
+
+    }
+    .menu{
+        margin-left: -20px;
+    }
+}
+
+li a:hover, .dropdown:hover .dropbtn {
+    background-color: hsl(180, 100%, 40%);
+}
+
+li.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 10px;
+}
+
+
+.dropdown-content a {
+    color: black;
+    padding: 5px 15px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+@media (max-width: 700px){
+    .dropdown-content {
+        margin-top: 2px;
+        margin-left: -20px;
+        padding-left: 0px;
+        }
+
+
+}
