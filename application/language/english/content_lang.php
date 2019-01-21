@@ -59,7 +59,7 @@ $lang['address_here']='Input address here...';
 $lang['font_family']='"Calibri Light";';
 $lang['birth_residential']='BirthPlace';
 $lang['why_post']='Why need birthplace’s postal code?';
-$lang['tooltip']='There are always chances peple has same first name, same last name, same gender and also was born on the same day in the same month and year. This could potentially cause failed registration.  When we have the postal code of your birth place as part of your user name, most of the conflict issue will be resolved. You can input the code directly or input the address of birth place, our system will generate the code for you.';
+$lang['tooltip']='There are always chances people has same first name, same last name, same gender and also was born on the same day in the same month and year. This could potentially cause failed registration.  When we have the postal code of your birth place as part of your user name, most of the conflict issue will be resolved. You can input the code directly or input the address of birth place, our system will generate the code for you.';
 $lang['match']='Sorry, we are not able to find a matched postal code, please input';
 $lang['mefon']='MeFon';
 $lang['mail_exist']='This email address has been registered with us, please use another one!';
@@ -78,5 +78,9 @@ $lang['origin_land']="Origin Land";
 $lang['key_words']="Key Words";
 $lang['citizenship']="Citizenship";
 $lang['down_message']="The mobile app is being downloaded, please check the download status in browser.";
+$lang['sent']="SMS verification code has been sent to your phone.";
+$lang['resend_issue']="Please resend the code if you have not received it.";
+$lang['resend_sms']="Resend SMS code.";
+$lang['sms_text']="SMS verification code"
 
 ?>

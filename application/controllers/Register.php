@@ -44,7 +44,6 @@ class Register  extends CI_Controller{
     {
         if (isset($_POST['mobile_number'])) {
             $mobile_number = $_POST['mobile_number'];
-
             $zip_code=str_replace(' ', '', $_POST['zip_code']);
             $load_address=$_POST['load_address'];
             $province = $_POST['province'];
@@ -57,16 +56,33 @@ class Register  extends CI_Controller{
             $post_code = preg_replace('/\s+/', '', $post_code);
             $occupation = $_POST['occupation'];
             $birthplace = $_POST['birthplace'];
-
             $first_name = $_POST['first_name'];
             $last_name = $_POST['last_name'];
             $user_email = $_POST['user_email'];
             $user_apt = $_POST['apt'];
             $user_password = $_POST['user_password'];
-//            $confirm_user_password = $_POST['confirm_user_password'];
+
             $user_name=strtolower($nationality.'.'.$last_name.'.'.$first_name.'.'.$post_code.'.'.$country_birth);
 
-//
+            $_SESSION["account_name"] =$user_name;
+            $_SESSION["first_name"] = $first_name;
+            $_SESSION["last_name"] = $last_name;
+            $_SESSION["user_email"] = $user_email;
+            $_SESSION["user_apt"] = $user_apt;
+            $_SESSION["mobile_number"] = $mobile_number;
+            $_SESSION["province"] = $province;
+            $_SESSION["user_password"] = $user_password;
+            $_SESSION["country"] = $country;
+            $_SESSION["user_language"] = $language;
+            $_SESSION["city"] = $city;
+            $_SESSION["nationality"] = $nationality;
+            $_SESSION["country_birth"] = $country_birth;
+            $_SESSION["post_code"] = $post_code;
+            $_SESSION["zip_code"] = $zip_code;
+            $_SESSION["load_address"] = $load_address;
+            $_SESSION["occupation"] = $occupation;
+            $_SESSION["birthplace"] = $birthplace;
+
 //          upload profile image
 
 
@@ -79,82 +95,67 @@ class Register  extends CI_Controller{
             if(move_uploaded_file($_FILES["image"]["tmp_name"],$file_path)){
                 $image_url=str_replace("index.php/","",site_url($image_path));
             }
+            $_SESSION["image_url"] = $image_url;
 
-            $generateUrl = "https://auth.miniorange.com/moas/api/auth/challenge";
-            /* The customer Key provided to you */
-            $customerKey = "120306";
-            /* The customer API Key provided to you */
-            $apiKey = "Cnq4LaoXHi5VuPVgPqWAqHsqIQMfMwfO";
-            /* Current time in milliseconds since midnight, January 1, 1970 UTC. */
-            $currentTimeInMillis = round(microtime(true) * 1000);
-            /* Creating the Hash using SHA-512 algorithm */
-            $stringToHash = $customerKey . number_format($currentTimeInMillis, 0, '', '') .
-                $apiKey;
-            $hashValue = hash("sha512", $stringToHash);
-            /* The Array containing the request information */
-            $jsonRequest = array("customerKey" => $customerKey, "phone" => $mobile_number);
-            /* JSON encode the request array to get JSON String */
-            $jsonRequestString = json_encode($jsonRequest);
-            $customerKeyHeader = "Customer-Key: " . $customerKey;
-            $timestampHeader = "Timestamp: " . number_format($currentTimeInMillis, 0, '', ''
-                );
-            $authorizationHeader = "Authorization: " . $hashValue;
-            /* Initialize curl */
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json",
-                $customerKeyHeader, $timestampHeader, $authorizationHeader));
-            curl_setopt($ch, CURLOPT_URL, $generateUrl);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-            curl_setopt($ch, CURLOPT_VERBOSE, TRUE);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonRequestString);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            /* Calling the rest API */
-            $result = curl_exec($ch);
-            if (curl_errno($ch)) {
-                print curl_error($ch);
-            } else {
-                curl_close($ch);
-            }
-            /* If a valid response is received, get the JSON response */
-            $response = (array)json_decode($result);
-            $status = $response['status'];
-            if ($status == 'SUCCESS') {
-                $_SESSION["txid"] = $response['txId'];
-                $_SESSION["account_name"] =$user_name;
-                $_SESSION["first_name"] = $first_name;
-                $_SESSION["last_name"] = $last_name;
-                $_SESSION["user_email"] = $user_email;
-                $_SESSION["user_apt"] = $user_apt;
-                $_SESSION["mobile_number"] = $mobile_number;
-                $_SESSION["province"] = $province;
-                $_SESSION["user_password"] = $user_password;
-                $_SESSION["country"] = $country;
-                $_SESSION["user_language"] = $language;
-                $_SESSION["city"] = $city;
-                $_SESSION["nationality"] = $nationality;
-                $_SESSION["country_birth"] = $country_birth;
-                $_SESSION["post_code"] = $post_code;
-                $_SESSION["zip_code"] = $zip_code;
-                $_SESSION["load_address"] = $load_address;
-                $_SESSION["image_url"] = $image_url;
-                $_SESSION["occupation"] = $occupation;
-                $_SESSION["birthplace"] = $birthplace;
-
-                $this->load->view('register/validate.php');
-            } else {
-                echo $response['message'];
-            }
-
+            redirect('/register/resend/');
         }
 //
         else{
 //            redirect('/register/index', 'refresh');
-            $this->load->view('register/validate.php');
+            $this->load->view('register/index.php');
         }
 
+    }
+    public function resend(){
+        $generateUrl = "https://auth.miniorange.com/moas/api/auth/challenge";
+        /* The customer Key provided to you */
+        $customerKey = "120306";
+        $mobile_number=$_SESSION["mobile_number"];
+        /* The customer API Key provided to you */
+        $apiKey = "Cnq4LaoXHi5VuPVgPqWAqHsqIQMfMwfO";
+        /* Current time in milliseconds since midnight, January 1, 1970 UTC. */
+        $currentTimeInMillis = round(microtime(true) * 1000);
+        /* Creating the Hash using SHA-512 algorithm */
+        $stringToHash = $customerKey . number_format($currentTimeInMillis, 0, '', '') .
+            $apiKey;
+        $hashValue = hash("sha512", $stringToHash);
+        /* The Array containing the request information */
+        $jsonRequest = array("customerKey" => $customerKey, "phone" => $mobile_number);
+        /* JSON encode the request array to get JSON String */
+        $jsonRequestString = json_encode($jsonRequest);
+        $customerKeyHeader = "Customer-Key: " . $customerKey;
+        $timestampHeader = "Timestamp: " . number_format($currentTimeInMillis, 0, '', ''
+            );
+        $authorizationHeader = "Authorization: " . $hashValue;
+        /* Initialize curl */
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json",
+            $customerKeyHeader, $timestampHeader, $authorizationHeader));
+        curl_setopt($ch, CURLOPT_URL, $generateUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($ch, CURLOPT_VERBOSE, TRUE);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonRequestString);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        /* Calling the rest API */
+        $result = curl_exec($ch);
+        if (curl_errno($ch)) {
+            print curl_error($ch);
+        } else {
+            curl_close($ch);
+        }
+        /* If a valid response is received, get the JSON response */
+        $response = (array)json_decode($result);
+        $status = $response['status'];
+        if ($status == 'SUCCESS') {
+            $_SESSION["txid"] = $response['txId'];
+
+            $this->load->view('register/validate.php');
+        } else {
+            echo $response['message'];
+        }
     }
 
     public function verify()
@@ -259,37 +260,23 @@ class Register  extends CI_Controller{
                     $this->load->view('register/index.php',$error);
 
                 } else {
-
+                    $this->load->model('user');
                     $data1['user_name']=$_SESSION["account_name"] ;
-                    $data1['first_name']=$_SESSION["first_name"] ;
-                    $data1['last_name']=$_SESSION["last_name"];
                     $data1['user_email']=$_SESSION["user_email"];
-                    $data1['apt']=$_SESSION["user_apt"];
-                    $data1['mobile_number']=$_SESSION["mobile_number"];
-                    $data1['zip_code']=$_SESSION["zip_code"];
-                    $data1['load_address']=$_SESSION["load_address"];
-                    $data1['province']=$_SESSION["province"];
-                    $data1['country']=$_SESSION["country"] ;
                     $data1['language']=$_SESSION["user_language"];
-                    $data1['city']=$_SESSION["city"] ;
-                    $data1['nationality']=$_SESSION["nationality"];
-                    $data1['country_birth']=$_SESSION["country_birth"] ;
-                    $data1['post_code']=$_SESSION["post_code"];
-                    $data1['image_url']=$_SESSION["image_url"];
-
-                    if ($result=='True'){
-                        $email=$this->user->sendmail($data1);
+                    $email=$this->user->sendmail($data1);
 //                        send email is success
-                        if($email){
-                            $dat='success';
-                            redirect('/welcome/index/'.$dat);
+                    if($email){
+                        $dat='success';
+                        redirect('/welcome/index/'.$dat);
 
-                        }else{
-                            $dat='email_faild';
-                            redirect('/welcome/index/'.$dat);
-                        }
-
+                    }else{
+                        $dat='email_faild';
+                        redirect('/welcome/index/'.$dat);
                     }
+
+//                    }
+
 
 
                 }
@@ -384,7 +371,7 @@ class Register  extends CI_Controller{
 
     }
     function test(){
-        $this->load->view('register/test.php');
+        $this->load->view('register/validate.php');
     }
 
     function send_file(){

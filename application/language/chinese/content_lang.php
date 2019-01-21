@@ -80,4 +80,8 @@ $lang['origin_land']="出生地";
 $lang['key_words']="关键词";
 $lang['citizenship']="国籍";
 $lang['down_message']="手机App已经在下载中，请耐心等待检查浏览器中的下载状态。";
+$lang['sent']="我们已发送验证码，请您验证。";
+$lang['resend_issue']="如果您没有收到验证码，请您从新发验证码。";
+$lang['resend_sms']="从新发验证码。";
+$lang['sms_text']="短信验证码"
 ?>
