@@ -53,7 +53,7 @@ $this->load->view('header.php');
 <!--</script>-->
 <script>
     // Set the date we're counting down to
-    var countDownDate = 50;
+    var countDownDate = 60;
     // Update the count down every 1 second
     var x = setInterval(function() {
         // Find the distance between now and the count down date
