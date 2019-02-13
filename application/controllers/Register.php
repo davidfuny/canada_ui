@@ -371,7 +371,7 @@ class Register  extends CI_Controller{
 
     }
     function test(){
-        $this->load->view('register/validate.php');
+        $this->load->view('register/ajax_file.php');
     }
 
     function send_file(){
@@ -398,7 +398,39 @@ class Register  extends CI_Controller{
             echo(json_encode($result));
 
     }
+    function ajax_upload(){
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < 10; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+//        $image_path='assets/user_images/temp.jpg';
+//        $file_path = iconv("utf-8", "cp936", 'assets/user_images/temp.jpg');
+        $image_path='assets/user_images/'.$randomString.'.jpg';
+        $file_path = iconv("utf-8", "cp936", $image_path);
+        $url=base_url($file_path);
 
+        if(file_exists($file_path)){
+            unlink($file_path);
+        }
+        $file=$_FILES["file_name"]["tmp_name"];
+        if(move_uploaded_file($file,$file_path)){
+            require_once("java/Java.inc");
+
+            $test = new Java("face.FaceEngineTest"); //产生实例
+            $java_file=$randomString.'.jpg';
+            $result = $test-> faceEngineTest($url,$java_file);
+            if(file_exists($file_path)){
+                unlink($file_path);
+            }
+            echo($result);
+
+        }
+        else{
+            echo('nothuman');
+        }
+    }
 
 
 }

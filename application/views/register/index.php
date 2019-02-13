@@ -4939,6 +4939,7 @@ $this->lang->load('content',$user_language);
                 modal_image.classList.remove("rotate_modal_180");
                 if( fileName ){
                     var file    = document.querySelector('input[type=file]').files[0];
+
                     var reader  = new FileReader();
                     reader.addEventListener("load", function () {
                         preview.src = reader.result;
@@ -4947,6 +4948,7 @@ $this->lang->load('content',$user_language);
                         var gif=document.getElementById("loading_image");
                         gif.style.display = "block";
                         reader.readAsDataURL(file);
+                        var device=getMobileOperatingSystem(); //check deveice operation system
                         // image check
                         reader.onload = function (f) {
                             var user_image = $('#user_iamge');
@@ -4975,31 +4977,25 @@ $this->lang->load('content',$user_language);
                                 }
                                 context.drawImage(this, offsetX, offsetY, imageWidth, imageHeight);
                                 var data = canvas.toDataURL('image/jpeg',3);
-                                var data_image=data.split("base64,")[1];
+                                var compress_image = convertBase64UrlToBlob(data); // convert from base64 data to image
+                                var fd = new FormData();
+                                fd.append('file_name', compress_image);
                                 $.ajax({
-                                    url: "<?php echo site_url('register/send_file/')?>",
+//                                    url: "<?php //echo site_url('register/send_file/')?>//",
+                                    url: "<?php echo site_url('register/ajax_upload/')?>",
                                     type: 'POST',
-                                    data:{
-                                        "base64": data_image
-                                    },
-                                    dataType: 'json',
+                                    data: fd,
+                                    cache: false,
+                                    processData: false,
+                                    contentType: false,
                                     success: function (data) {
 
-                                        gif.style.display = "none";
-                                        var exist=$.parseJSON(data).result;
-
-                                      if(exist==false){
-                                          $("#gif_check").html("<?=$this->lang->line('image_check_tooltip');?>");
-                                          var elem = document.getElementById("image_check");
-                                          elem.style.visibility = 'visible';
-                                      }
-                                      if(exist=='error'){
-                                          $("#gif_check").html("<?=$this->lang->line('internet_error');?>");
-
-                                          var elem = document.getElementById("image_check");
-                                          elem.style.visibility = 'visible';
-                                      }
-
+                                          gif.style.display = "none";//
+                                          if(data=='nothuman'){
+                                              $("#gif_check").html("<?=$this->lang->line('image_check_tooltip');?>");
+                                              var elem = document.getElementById("image_check");
+                                              elem.style.visibility = 'visible';
+                                          }
 
 
                                     },
@@ -5019,34 +5015,37 @@ $this->lang->load('content',$user_language);
                             console.log('Error: ', error);
                         };
                         // end check image
-                        EXIF.getData(file, function() {
-                            // alert(EXIF.pretty(this));
-                            EXIF.getAllTags(this);
-                            var Orientation=EXIF.getTag(this, 'Orientation');
+                        if(device=='isNot_ios'){
+                            EXIF.getData(file, function() {
+                                // alert(EXIF.pretty(this));
+                                EXIF.getAllTags(this);
+                                var Orientation=EXIF.getTag(this, 'Orientation');
 
-                            if(Orientation==6){
+                                if(Orientation==6){
 
-                                preview.classList.add("rotate");
-                                modal_image.classList.add("rotate_modal");
+                                    preview.classList.add("rotate");
+                                    modal_image.classList.add("rotate_modal");
 
-                            }
-                            if(Orientation==8){
+                                }
+                                if(Orientation==8){
 
-                                preview.classList.add("rotate_right");
-                                modal_image.classList.add("rotate_modal_right");
+                                    preview.classList.add("rotate_right");
+                                    modal_image.classList.add("rotate_modal_right");
 
-                            }
-                            if(Orientation==3){
+                                }
+                                if(Orientation==3){
 
-                                preview.classList.add("rotate_180");
-                                modal_image.classList.add("rotate_modal_180");
+                                    preview.classList.add("rotate_180");
+                                    modal_image.classList.add("rotate_modal_180");
 
-                            }
+                                }
 
-                            return;
+                                return;
 
 
-                        })
+                            })
+                        }
+
                     }
 
                     image_error.style.display = "none";
@@ -5064,6 +5063,34 @@ $this->lang->load('content',$user_language);
             input.addEventListener( 'blur', function(){ input.classList.remove( 'has-focus' ); });
         });
     }( document, window, 0 ));
+
+    function convertBase64UrlToBlob(urlData){
+        var arr = urlData.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], {type:mime});
+    }
+
+    function getMobileOperatingSystem() {
+        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+        // Windows Phone must come first because its UA also contains "Android"
+//        if (/windows phone/i.test(userAgent)) {
+//            return "Windows Phone";
+//        }
+//
+//        if (/android/i.test(userAgent)) {
+//            return "Android";
+//        }
+        // iOS detection from: http://stackoverflow.com/a/9039885/177710
+        if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+            return "iOS";
+        }
+        return "isNot_ios";
+    }
+
 </script>
 <script>
     var myInput = document.getElementById("pass");
