@@ -14,8 +14,8 @@ $this->load->view('header.php');
                     }
                     ?></div>
                 <label for="uname" id="'user"><b><?=$this->lang->line('sms_text');?></b></label>
-                <input type="text" placeholder="SMS number" name="sms" required style="float: left">
-                <span id="count_time" >30s</span>
+                <input type="text" placeholder="SMS number" name="sms" id="sms_number"  style="float: left">
+                <span id="count_time" >60s</span>
                 <p id="demo"><?=$this->lang->line('sent');?></p>
                 <button style="display: none " id="resend"><a style="text-decoration: none;color: white"  href="<?php echo site_url('register/resend') ?>" ><?=$this->lang->line('resend_sms');?></a></button>
 
@@ -67,6 +67,7 @@ $this->load->view('header.php');
             document.getElementById("count_time").innerHTML ="";
             document.getElementById("resend").style.display = "block";
             document.getElementById("login").style.display = "none";
+            document.getElementById("sms_number").style.display = "none";
         }
     }, 1000);
 </script>

@@ -237,49 +237,44 @@ class Register  extends CI_Controller{
                 $data_user->address=$data_address;
                 $data_user->identity=$data_identity;
 
-                $data_string = json_encode($data_user,JSON_UNESCAPED_UNICODE);
-                $ch = curl_init('http://mefon.scopeactive.com:8080/uaa/api/register');
-                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                    'Content-Type: application/json',
-                    'Authorization : Basic bWVmb25fYXBwOlA5MDgyMGJiMTc0M2UxMGNlYQ=='));
-//    die($ch);
-                $result = curl_exec($ch);
-                $sss = json_decode($result);
-                if (isset($sss->{'message'})) {
-                    if ($_SESSION["language"]=='chinese'){
-                        $error['register']="用户已存在或者邮件重复使用。";
-                    }
-                    else{
-                        $error['register']="The user exists or the email address has been registered with Mefon";
-                    }
-//                    session_destroy();
-
-                    $this->load->view('register/index.php',$error);
-
-                } else {
-                    $this->load->model('user');
-                    $data1['user_name']=$_SESSION["account_name"] ;
-                    $data1['user_email']=$_SESSION["user_email"];
-                    $data1['language']=$_SESSION["user_language"];
-                    $email=$this->user->sendmail($data1);
-//                        send email is success
-                    if($email){
-                        $dat='success';
-                        redirect('/welcome/index/'.$dat);
-
+                $user_extist ="exist";
+                $user_name = $_SESSION["account_name"];
+                $i=1;
+                while ($user_extist == "exist"){
+                    $data_string = json_encode($data_user,JSON_UNESCAPED_UNICODE);
+                    $ch = curl_init('http://mefon.scopeactive.com:8080/uaa/api/register');
+                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                        'Content-Type: application/json',
+                        'Authorization : Basic bWVmb25fYXBwOlA5MDgyMGJiMTc0M2UxMGNlYQ=='));
+                    $result = curl_exec($ch);
+                    $sss = json_decode($result);
+                    if (isset($sss->{'message'})) {
+                        $user_name = $_SESSION["account_name"]. '.' . $i;
+                        $data_user->login = $user_name;
+                        $i = $i + 1;
                     }else{
-                        $dat='email_faild';
-                        redirect('/welcome/index/'.$dat);
+                        $user_extist ="not_exist";
+                        $_SESSION["account_name"]=$user_name;
                     }
-
-//                    }
-
-
-
                 }
+                $this->load->model('user');
+                $data1['user_name']=$_SESSION["account_name"] ;
+                $data1['user_email']=$_SESSION["user_email"];
+                $data1['language']=$_SESSION["user_language"];
+                $email=$this->user->sendmail($data1);
+//                        send email is success
+                if($email){
+                    $dat='success';
+                    redirect('/welcome/index/'.$dat);
+
+                }else{
+                    $dat='email_faild';
+                    redirect('/welcome/index/'.$dat);
+                }
+
             } else {
                 $data['message']=$response['message'];
                 $this->load->view('register/validate.php',$data);
@@ -371,7 +366,7 @@ class Register  extends CI_Controller{
 
     }
     function test(){
-        $this->load->view('register/ajax_file.php');
+        $this->load->view('register/validate.php');
     }
 
     function send_file(){
@@ -417,15 +412,14 @@ class Register  extends CI_Controller{
         $file=$_FILES["file_name"]["tmp_name"];
         if(move_uploaded_file($file,$file_path)){
             require_once("java/Java.inc");
-
             $test = new Java("face.FaceEngineTest"); //产生实例
             $java_file=$randomString.'.jpg';
             $result = $test-> faceEngineTest($url,$java_file);
+            $test=null;
             if(file_exists($file_path)){
                 unlink($file_path);
             }
             echo($result);
-
         }
         else{
             echo('nothuman');
