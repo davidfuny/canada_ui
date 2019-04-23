@@ -24,8 +24,6 @@ class Language extends CI_Controller{
     {
         $_SESSION["language"]=$lang;
         redirect($_SERVER["HTTP_REFERER"]);
-//        $url=$this->uri->uri_string();
-//        redirect($url,'refresh');
     }
 
 }
